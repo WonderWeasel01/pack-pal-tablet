@@ -12,11 +12,11 @@ const Index = () => {
           <div className="flex items-center justify-center mb-6">
             <Package className="w-16 h-16 text-primary mr-4" />
             <h1 className="text-6xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              Lynx
+              Wentzel Storage
             </h1>
           </div>
           <p className="text-2xl text-muted-foreground max-w-2xl mx-auto">
-            Professional Storage Management System for Wall-Mounted Displays
+            Professionelt lagerstyringssystem til vægmonterede skærme
           </p>
         </div>
 
@@ -27,33 +27,20 @@ const Index = () => {
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
                 <Settings className="w-8 h-8 text-primary" />
               </div>
-              <CardTitle className="text-2xl">Admin Dashboard</CardTitle>
+              <CardTitle className="text-2xl">Admin Panel</CardTitle>
               <CardDescription className="text-lg">
-                Create packaging orders, manage templates, and control the system
+                Opret pakkelister, administrer skabeloner og styr systemet
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link to="/admin">
                 <Button variant="industrial" size="lg" className="w-full">
-                  Open Admin Panel
+                  Åbn Admin Panel
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
               
-              <div className="mt-6 space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  Create and manage packaging orders
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  Build package templates for common orders
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  Monitor order status and progress
-                </div>
-              </div>
+            
             </CardContent>
           </Card>
 
@@ -62,33 +49,20 @@ const Index = () => {
               <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/20 transition-colors">
                 <Monitor className="w-8 h-8 text-accent" />
               </div>
-              <CardTitle className="text-2xl">Storage Display</CardTitle>
+              <CardTitle className="text-2xl">Lagerdisplay</CardTitle>
               <CardDescription className="text-lg">
-                Wall-mounted interface for warehouse staff to see pick lists
+                Vægmonteret interface til lagerpersonale for at se pluklister
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link to="/storage">
                 <Button variant="wall" size="lg" className="w-full bg-accent hover:bg-accent/90">
-                  Open Storage View
+                  Åbn lagervisning
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
               
-              <div className="mt-6 space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  Large, clear display for wall mounting
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  Real-time order updates and progress
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  Touch-friendly interface for tablets
-                </div>
-              </div>
+       
             </CardContent>
           </Card>
         </div>
@@ -97,7 +71,7 @@ const Index = () => {
         <div className="text-center mt-16">
           <div className="inline-flex items-center gap-4 px-6 py-3 bg-card rounded-full shadow-card">
             <div className="w-3 h-3 bg-success rounded-full animate-pulse"></div>
-            <span className="text-muted-foreground">System Online</span>
+            <span className="text-muted-foreground">System online</span>
           </div>
         </div>
       </div>

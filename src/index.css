@@ -18,10 +18,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 15%;
 
-    /* Primary Brand - Industrial Blue */
-    --primary: 210 85% 28%;
+    /* Primary Brand - Green */
+    --primary: 142 76% 36%;           /* green-600 */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 210 85% 40%;
+    --primary-glow: 142 76% 46%;      /* lighter green */
 
     /* Secondary - Clean Gray */
     --secondary: 215 15% 90%;
@@ -31,8 +31,8 @@
     --muted: 215 15% 95%;
     --muted-foreground: 215 10% 45%;
 
-    /* Accent - Warning Orange */
-    --accent: 25 95% 53%;
+    /* Accent - Green (optional, or keep orange if you want contrast) */
+    --accent: 142 76% 46%;            /* green accent */
     --accent-foreground: 0 0% 100%;
 
     /* Success Green */
@@ -90,8 +90,9 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 142 76% 36%;
     --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-glow: 142 76% 46%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -99,7 +100,7 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 142 76% 46%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;

@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Package, MapPin, CheckCircle, Circle, Clock } from "lucide-react";
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+
+const API_URL = "http://localhost:3001";
 
 interface OrderItem {
   id: string;
@@ -22,27 +25,51 @@ interface Order {
 }
 
 const Storage = () => {
-  const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
+  const [storageItems, setStorageItems] = useState<OrderItem[]>([]);
+  const [activeOrder, setActiveOrder] = useState<Order | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
 
-  // Simulate getting active order (in real app, this would come from a backend/state management)
+  // Læs ordrer fra lokal fil ved opstart
   useEffect(() => {
-    // Mock active order for demonstration
-    const mockOrder: Order = {
-      id: '1',
-      title: 'Electronics Kit Assembly',
-      status: 'active',
-      createdAt: new Date(),
-      items: [
-        { id: '1', name: 'Arduino Uno R3', location: 'A1-B2', quantity: 1, found: false },
-        { id: '2', name: 'Breadboard Large', location: 'A1-C3', quantity: 2, found: false },
-        { id: '3', name: 'Jumper Wires (M-M)', location: 'A2-A1', quantity: 1, found: true },
-        { id: '4', name: 'LED Pack (Red)', location: 'A3-B1', quantity: 1, found: false },
-        { id: '5', name: 'Resistor Kit', location: 'A3-B2', quantity: 1, found: true },
-      ]
+    const loadOrdersFromFile = async () => {
+      try {
+        const result = await Filesystem.readFile({
+          path: 'orders.json',
+          directory: Directory.Data,
+          encoding: Encoding.UTF8,
+        });
+        const orders: Order[] = JSON.parse(typeof result.data === 'string' ? result.data : await result.data.text());
+        // Sæt den første aktive ordre som currentOrder
+        const activeOrder = orders.find(o => o.status === 'active');
+        if (activeOrder) setCurrentOrder(activeOrder);
+      } catch (e) {
+        // Filen findes ikke endnu, behold fallback
+      }
     };
-    
-    setCurrentOrder(mockOrder);
+    loadOrdersFromFile();
+  }, []);
+
+  // Fetch storage items and active order
+  useEffect(() => {
+    // Fetch storage items
+    const fetchStorage = async () => {
+      const res = await fetch(`${API_URL}/storage`);
+      const data = await res.json();
+      setStorageItems(data);
+    };
+
+    // Fetch active order
+    const fetchActiveOrder = async () => {
+      const res = await fetch(`${API_URL}/orders`);
+      const orders: Order[] = await res.json();
+      const active = orders.find(o => o.status === "active");
+      setActiveOrder(active || null);
+      setCurrentOrder(active || null); // <-- Add this line
+    };
+
+    fetchStorage();
+    fetchActiveOrder();
   }, []);
 
   // Update time every second
@@ -65,9 +92,46 @@ const Storage = () => {
     }
   };
 
+  const getFoundStatus = (item: OrderItem) => {
+    if (!activeOrder) return false;
+    const foundItem = activeOrder.items.find(
+      (orderItem) =>
+        orderItem.name === item.name &&
+        orderItem.location === item.location &&
+        orderItem.found
+    );
+    return !!foundItem;
+  };
+
   const foundItems = currentOrder?.items.filter(item => item.found).length || 0;
   const totalItems = currentOrder?.items.length || 0;
   const progress = totalItems > 0 ? (foundItems / totalItems) * 100 : 0;
+
+  const markOrderComplete = async () => {
+    if (!currentOrder) return;
+    try {
+      // Læs alle ordrer fra fil
+      const result = await Filesystem.readFile({
+        path: 'orders.json',
+        directory: Directory.Data,
+        encoding: Encoding.UTF8,
+      });
+      const orders: Order[] = JSON.parse(typeof result.data === 'string' ? result.data : await result.data.text());
+      // Find og opdater den aktuelle ordre
+      const updatedOrders = orders.map(order =>
+        order.id === currentOrder.id ? { ...order, status: 'completed' } : order
+      );
+      await Filesystem.writeFile({
+        path: 'orders.json',
+        data: JSON.stringify(updatedOrders, null, 2),
+        directory: Directory.Data,
+        encoding: Encoding.UTF8,
+      });
+      setCurrentOrder(null); // Nulstil currentOrder
+    } catch (e) {
+      // Håndter fejl
+    }
+  };
 
   if (!currentOrder) {
     return (
@@ -75,9 +139,9 @@ const Storage = () => {
         <Card className="w-full max-w-2xl text-center shadow-glow">
           <CardContent className="p-12">
             <Package className="w-24 h-24 mx-auto text-muted-foreground mb-6" />
-            <h2 className="text-3xl font-bold mb-4">No Active Orders</h2>
+            <h2 className="text-3xl font-bold mb-4">Ingen aktive ordrer</h2>
             <p className="text-xl text-muted-foreground mb-6">
-              Waiting for packaging orders from admin...
+              Venter på pakkeliste fra admin...
             </p>
             <div className="text-lg font-mono">
               {currentTime.toLocaleTimeString()}
@@ -94,8 +158,8 @@ const Storage = () => {
         {/* Header with Time and Progress */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-foreground">Lynx Storage</h1>
-            <p className="text-xl text-muted-foreground">Pick List Display</p>
+            <h1 className="text-4xl font-bold text-foreground">Lynx Lager</h1>
+            <p className="text-xl text-muted-foreground">Plukliste visning</p>
           </div>
           <div className="text-right">
             <div className="text-3xl font-mono font-bold">
@@ -117,21 +181,21 @@ const Storage = () => {
                   {currentOrder.title}
                 </CardTitle>
                 <p className="text-muted-foreground mt-1">
-                  Order ID: {currentOrder.id}
+                  Ordre-ID: {currentOrder.id}
                 </p>
               </div>
               <Badge variant="default" className="text-lg px-4 py-2">
                 <Clock className="w-4 h-4 mr-2" />
-                Active
+                Aktiv
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="p-6">
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-lg font-semibold">Progress</span>
+                <span className="text-lg font-semibold">Fremdrift</span>
                 <span className="text-lg font-mono">
-                  {foundItems}/{totalItems} items
+                  {foundItems}/{totalItems} varer
                 </span>
               </div>
               <Progress value={progress} className="h-3" />
@@ -175,7 +239,7 @@ const Storage = () => {
                           <span className="font-mono text-lg">{item.location}</span>
                         </div>
                         <div className="text-lg">
-                          Qty: <span className="font-bold">{item.quantity}</span>
+                          Antal: <span className="font-bold">{item.quantity}</span>
                         </div>
                       </div>
                     </div>
@@ -185,12 +249,12 @@ const Storage = () => {
                     {item.found ? (
                       <Badge variant="default" className="text-lg px-4 py-2">
                         <CheckCircle className="w-4 h-4 mr-2" />
-                        Found
+                        Fundet
                       </Badge>
                     ) : (
                       <Badge variant="outline" className="text-lg px-4 py-2">
                         <Circle className="w-4 h-4 mr-2" />
-                        Pending
+                        Afventer
                       </Badge>
                     )}
                   </div>
@@ -202,15 +266,53 @@ const Storage = () => {
 
         {/* Complete Order Button */}
         {progress === 100 && (
-          <Card className="shadow-glow animate-pulse-glow">
+          <Card className="shadow-glow animate-pulse-glow cursor-pointer" onClick={markOrderComplete}>
             <CardContent className="p-6 text-center">
-              <Button variant="wall" size="wall" className="animate-fade-in">
-                <CheckCircle className="w-8 h-8 mr-4" />
-                Order Complete - All Items Found!
-              </Button>
+              <div className="w-full">
+                <Button variant="wall" size="wall" className="animate-fade-in w-full" tabIndex={-1} type="button" onClick={e => e.preventDefault()}>
+                  <CheckCircle className="w-8 h-8 mr-4" />
+                  Ordre fuldført - alle varer fundet!
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}
+
+        {/* Lageroversigt */}
+        <h2 className="text-2xl font-bold mb-4">Lageroversigt</h2>
+        <div className="grid gap-4">
+          {storageItems.map((item) => (
+            <Card key={item.id} className="shadow-card">
+              <CardContent className="p-6 flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold mb-1">{item.name}</h3>
+                  <div className="flex items-center gap-4 text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4" />
+                      <span className="font-mono text-lg">{item.location}</span>
+                    </div>
+                    <div className="text-lg">
+                      Antal: <span className="font-bold">{item.quantity}</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  {getFoundStatus(item) ? (
+                    <Badge variant="default" className="text-lg px-4 py-2">
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Fundet
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-lg px-4 py-2">
+                      <Circle className="w-4 h-4 mr-2" />
+                      Ikke fundet
+                    </Badge>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );

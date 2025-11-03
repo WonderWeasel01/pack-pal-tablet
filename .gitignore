@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+#android
+android
+android/app/build
+
+#backend
+backend/storage.db
