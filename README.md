@@ -1,53 +1,53 @@
 # Wentzel Storage (Pack Pal Tablet)
 
-Dette er et lagerstyringssystem designet til tablets og desktop. Systemet håndterer ordrer, lagerbeholdning og pakke-skabeloner for at effektivisere pakkeprocessen.
+This is a warehouse management system designed for tablets and desktops. The system handles orders, inventory, and package templates to streamline the packing process.
 
-## Funktioner
+## Features
 
-*   **Lagerstyring:** Tilføj, rediger og slet varer i lageret med lokation og antal.
-*   **Ordrehåndtering:** Opret ordrer manuelt eller ud fra skabeloner. Følg status (afventer, aktiv, afsluttet).
-*   **Skabeloner:** Opret genanvendelige pakke-skabeloner for hurtig ordreoprettelse.
-*   **Lagerskærm (Storage View):** Visning til lageret, der viser aktive ordrer og varer.
-*   **Admin Panel:** Hovedinterface til administration af systemet.
+*   **Inventory Management:** Add, edit, and delete items in the warehouse with location and quantity.
+*   **Order Management:** Create orders manually or from templates. Track status (pending, active, completed).
+*   **Templates:** Create reusable package templates for quick order creation.
+*   **Warehouse View (Storage View):** Display for the warehouse showing active orders and items.
+*   **Admin Panel:** Main interface for system administration.
 
-## Teknisk Stack
+## Tech Stack
 
 *   **Frontend:** React (Vite), Tailwind CSS, Shadcn UI.
 *   **Backend:** Node.js (Express), SQLite (better-sqlite3).
-*   **Mobil:** Capacitor (til byg af Android/iOS apps).
+*   **Mobile:** Capacitor (for building Android/iOS apps).
 
 ## Installation
 
-1.  Klon projektet.
-2.  Installer afhængigheder:
+1.  Clone the project.
+2.  Install dependencies:
 
 ```bash
 npm install
 ```
 
-## Sådan kører du projektet
+## How to Run
 
-Systemet består af en frontend og en backend, der skal køre samtidig.
+The system consists of a frontend and a backend that must run simultaneously.
 
 ### 1. Start Backend
-Backend styrer databasen og API'et.
+The backend manages the database and the API.
 
 ```bash
 node backend/server.js
 ```
-*API'et vil køre på `http://localhost:3001`*
+*The API will run on `http://localhost:3001`*
 
 ### 2. Start Frontend
-Frontend er brugergrænsefladen. Åbn en ny terminal:
+The frontend is the user interface. Open a new terminal:
 
 ```bash
 npm run dev
 ```
-*Appen vil typisk være tilgængelig på `http://localhost:8080` (eller den port Vite vælger).*
+*The app will typically be available at `http://localhost:8080` (or whichever port Vite chooses).*
 
-## Byg til Produktion
+## Build for Production
 
-For at bygge frontend til produktion:
+To build the frontend for production:
 
 ```bash
 npm run build
@@ -55,4 +55,4 @@ npm run build
 
 ## Database
 
-Projektet bruger en lokal SQLite database (`backend/storage.db`). Denne fil oprettes automatisk første gang serveren startes, hvis den ikke findes.
+The project uses a local SQLite database (`backend/storage.db`). This file is automatically created the first time the server starts if it doesn't exist.
