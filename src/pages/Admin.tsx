@@ -332,7 +332,7 @@ const Admin = () => {
   }) => (
     <button
       onClick={onClick}
-      className={`px-6 py-3 font-semibold text-lg transition-all duration-200 border-b-2 ${
+      className={`px-6 py-3 font-semibold text-lg transition-all duration-200 border-b-2 whitespace-nowrap flex-shrink-0 ${
         isActive
           ? "text-primary border-primary bg-primary/5"
           : "text-muted-foreground border-transparent hover:text-foreground hover:border-muted-foreground/50"
@@ -359,7 +359,7 @@ const Admin = () => {
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex space-x-0 border-b">
+          <div className="flex space-x-0 border-b overflow-x-auto scrollbar-hide">
             <TabButton
               tab="orders"
               label="Ordrehåndtering"
